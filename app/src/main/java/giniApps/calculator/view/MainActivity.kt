@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         //Set action for all digit buttons:
         binding.digitsGroup.referencedIds.map<Button>(::findViewById)
             .forEach { btn ->
@@ -148,8 +149,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun unaryOpsAction(btnName: String) {
-        myCalc.saveVariable(result)
         myCalc.saveVariable(btnName)
+        myCalc.saveVariable(result)
         myCalc.calculate()
         clearDisplay()
         display(myCalc.getResult())

@@ -1,5 +1,25 @@
 package giniApps.calculator.controller
 
-enum class OperationsEnum {
-
+enum class OperationsEnum(val value: String) {
+    ADD("+"),
+    PRESENT("%"),
+    DIVIDE("÷"),
+    SUB("-"),
+    MULTIPLY("×"),
+    EQUALITY("="),
+    DOT("."),
+    PLUS_MINUS("+/-"),
+    PI("Π"),
+    E("e"),
+    FACTORIAL("x!"),
+    SIN("sin"),
+    COS("cos"),
+    TAN("tan"),
+    SQRT("√x"),
+    POW_2("x²"),
+    LOG("log"),
+    LN("ln"),
+    DELETE("del"),
+    POW("x^×"),
+    ABS("|x|"),
 }

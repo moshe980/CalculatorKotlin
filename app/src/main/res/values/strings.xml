@@ -19,5 +19,18 @@
     <string name="equalityBtn">=</string>
     <string name="dotBtn">.</string>
     <string name="plusMinusBtn">+/-</string>
+    <string name="piBtn">Π</string>
+    <string name="eBtn">e</string>
+    <string name="factorialBtn">x!</string>
+    <string name="sinBtn">sin</string>
+    <string name="cosBtn">cos</string>
+    <string name="tanBtn">tan</string>
+    <string name="sqrtBtn">√x</string>
+    <string name="pow2Btn">x²</string>
+    <string name="logBtn">log</string>
+    <string name="lnBtn">ln</string>
+    <string name="deleteBtn">del</string>
+    <string name="powBtn">x^×</string>
+    <string name="absBtn">|x|</string>
 
 </resources>

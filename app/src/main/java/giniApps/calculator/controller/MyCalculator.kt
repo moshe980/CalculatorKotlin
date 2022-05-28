@@ -14,6 +14,11 @@ sealed class MathOperation {
 class MyCalculator {
     private val operations: MutableMap<String, MathOperation> = mutableMapOf()
     private var statesStack: Stack<String> = Stack()
+        set(value) {
+            statesStack.clear()
+            statesStack.addAll(value)
+
+        }
     private var lastOperator: String = ""
     private var lastVar: Double = 0.0
     private var isFirstCalc: Boolean = true
@@ -21,33 +26,35 @@ class MyCalculator {
 
     init {
 
-        operations["+"] = MathOperation.Binary { x, y -> x + y }
-        operations["-"] = MathOperation.Binary { x, y -> x - y }
-        operations["×"] = MathOperation.Binary { x, y -> x * y }
-        operations["÷"] = MathOperation.Binary { x, y -> x / y }
-        operations["%"] = MathOperation.Unary { x -> x / 100 }
-        operations["+/-"] = MathOperation.Unary { x -> x * (-1) }
-        operations["Π"] = MathOperation.Const { PI }
-        operations["e"] = MathOperation.Const { Math.E }
-        operations["tan"] =
+        operations[OperationsEnum.ADD.value] = MathOperation.Binary { x, y -> x + y }
+        operations[OperationsEnum.SUB.value] = MathOperation.Binary { x, y -> x - y }
+        operations[OperationsEnum.MULTIPLY.value] = MathOperation.Binary { x, y -> x * y }
+        operations[OperationsEnum.DIVIDE.value] = MathOperation.Binary { x, y -> x / y }
+        operations[OperationsEnum.PRESENT.value] = MathOperation.Unary { x -> x / 100 }
+        operations[OperationsEnum.PLUS_MINUS.value] = MathOperation.Unary { x -> x * (-1) }
+        operations[OperationsEnum.PI.value] = MathOperation.Const { PI }
+        operations[OperationsEnum.E.value] = MathOperation.Const { Math.E }
+        operations[OperationsEnum.TAN.value] =
             MathOperation.Unary { x -> tan(Math.toRadians(x)).roundToInt().toDouble() }
-        operations["sin"] =
+        operations[OperationsEnum.SIN.value] =
             MathOperation.Unary { x -> sin(Math.toRadians(x)).roundToInt().toDouble() }
-        operations["cos"] =
+        operations[OperationsEnum.COS.value] =
             MathOperation.Unary { x -> cos(Math.toRadians(x)).roundToInt().toDouble() }
-        operations["log"] = MathOperation.Unary { x -> log(x, 10.0) }
-        operations["ln"] = MathOperation.Unary { x -> ln(x) }
-        operations["√x"] = MathOperation.Unary { x -> sqrt(x) }
-        operations["x²"] = MathOperation.Unary { x -> x.pow(2.0) }
-        operations["x!"] = MathOperation.Unary { x -> factorial(x) }
-        operations["|x|"] = MathOperation.Unary { x -> abs(x) }
-        operations["x^×"] = MathOperation.Binary { x, y -> x.pow(y) }
+        operations[OperationsEnum.LOG.value] = MathOperation.Unary { x -> log(x, 10.0) }
+        operations[OperationsEnum.LN.value] = MathOperation.Unary { x -> ln(x) }
+        operations[OperationsEnum.SQRT.value] = MathOperation.Unary { x -> sqrt(x) }
+        operations[OperationsEnum.POW_2.value] = MathOperation.Unary { x -> x.pow(2.0) }
+        operations[OperationsEnum.FACTORIAL.value] = MathOperation.Unary { x -> factorial(x) }
+        operations[OperationsEnum.ABS.value] = MathOperation.Unary { x -> abs(x) }
+        operations[OperationsEnum.POW.value] = MathOperation.Binary { x, y -> x.pow(y) }
 
 
     }
 
     fun calculate() {
-        operationSort()
+        if (statesStack.size > 3)
+            operationSort()
+
         var x = 0.0
         lateinit var operator: String
 
@@ -93,27 +100,27 @@ class MyCalculator {
     }
 
     private fun operationSort() {
-        val stack: Stack<String> = Stack()
+        val tmpStack: Stack<String> = Stack()
         var x: Double
         var y: Double
         var z: String
 
-        stack.addAll(statesStack)
+        tmpStack.addAll(statesStack)
 
         statesStack.forEach {
-            if (it.equals("×") || it.equals("÷")) {
-                x = stack.removeAt(stack.indexOf(it) + 1).toDouble()
-                y = stack.removeAt(stack.indexOf(it) - 1).toDouble()
+            if (it.equals("×") || it.equals("÷") || it.equals("÷") || it.equals("x^×")) {
+                x = tmpStack.removeAt(tmpStack.indexOf(it) + 1).toDouble()
+                y = tmpStack.removeAt(tmpStack.indexOf(it) - 1).toDouble()
                 val operation = operations[it] as MathOperation.Binary
                 z = operation.op.myApply(y, x).toString()
 
-                stack.insertElementAt(z, stack.indexOf(it))
-                stack.removeAt(stack.indexOf(it))
+                tmpStack.insertElementAt(z, tmpStack.indexOf(it))
+                tmpStack.removeAt(tmpStack.indexOf(it))
 
             }
         }
-        statesStack.clear()
-        statesStack.addAll(stack)
+
+        statesStack = tmpStack
 
     }
 
