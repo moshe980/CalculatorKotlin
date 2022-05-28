@@ -10,7 +10,7 @@ class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
     private val binding
         get() = _binding!!
-    private var result: String
+    private var displayResult: String
         get() = binding.textView.text.toString()
         set(value) {
             binding.textView.text = value
@@ -87,23 +87,23 @@ class MainActivity : AppCompatActivity() {
 
     private fun display(text: String) {
         if (isDisplayEmpty()) {
-            result = if (text == "Infinity")
+            displayResult = if (text == "Infinity")
                 "Divide zero!"
             else {
                 //Check if the result is integer
-                if (text.toDouble().rem(1).equals(0.0)) {
+                if (Math.abs(text.toDouble().rem(1)).equals(0.0)) {
                     text.toDouble().toInt().toString()
                 } else text
             }
 
         } else {
-            result += text
+            displayResult += text
 
         }
     }
 
     private fun clearDisplay() {
-        result = "0"
+        displayResult = "0"
     }
 
     private fun dotAction() {
@@ -124,7 +124,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun equalityAction() {
-        myCalc.saveVariable(result)
+        myCalc.saveVariable(displayResult)
         myCalc.calculate()
         clearDisplay()
 
@@ -143,14 +143,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun binaryOpsAction(btnName: String) {
-        myCalc.saveVariable(result)
+        myCalc.saveVariable(displayResult)
         myCalc.saveVariable(btnName)
         clearDisplay()
     }
 
     private fun unaryOpsAction(btnName: String) {
         myCalc.saveVariable(btnName)
-        myCalc.saveVariable(result)
+        myCalc.saveVariable(displayResult)
         myCalc.calculate()
         clearDisplay()
         display(myCalc.getResult())
@@ -164,18 +164,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun deleteAction() {
-        if (result.isNotEmpty()) {
-            result = result.substring(0, result.length - 1)
+        if (displayResult.isNotEmpty()) {
+            displayResult = displayResult.substring(0, displayResult.length - 1)
         }
 
-        if (result.isEmpty())
+        if (displayResult.isEmpty())
             restartDisplay()
     }
 
-    private fun isContainDot(): Boolean = result.contains(".")
-    private fun isDisplayEmpty(): Boolean = result == "0"
+    private fun isContainDot(): Boolean = displayResult.contains(".")
+    private fun isDisplayEmpty(): Boolean = displayResult == "0"
     private fun restartDisplay() {
-        result = "0"
+        displayResult = "0"
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -1,18 +1,14 @@
 package giniApps.calculator
 
 import giniApps.calculator.controller.MyCalculator
+import giniApps.calculator.controller.OperationsEnum
 import org.junit.After
 import org.junit.Test
 
 import org.junit.Assert.*
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 class CalculatorTestKit {
-    val myCalculator = MyCalculator()
+    private val myCalculator = MyCalculator()
 
     @After
     fun tearDown() {
@@ -22,7 +18,7 @@ class CalculatorTestKit {
     @Test
     fun addition_isCorrect() {
         myCalculator.saveVariable("2")
-        myCalculator.saveVariable("+")
+        myCalculator.saveVariable(OperationsEnum.ADD.value)
         myCalculator.saveVariable("3")
 
         myCalculator.calculate()
@@ -33,7 +29,7 @@ class CalculatorTestKit {
     @Test
     fun sub_isCorrect() {
         myCalculator.saveVariable("2")
-        myCalculator.saveVariable("-")
+        myCalculator.saveVariable(OperationsEnum.SUB.value)
         myCalculator.saveVariable("3")
 
         myCalculator.calculate()
@@ -44,7 +40,7 @@ class CalculatorTestKit {
     @Test
     fun mul_isCorrect() {
         myCalculator.saveVariable("2")
-        myCalculator.saveVariable("×")
+        myCalculator.saveVariable(OperationsEnum.MULTIPLY.value)
         myCalculator.saveVariable("3")
 
         myCalculator.calculate()
@@ -55,11 +51,11 @@ class CalculatorTestKit {
     @Test
     fun complex_isCorrect() {
         myCalculator.saveVariable("2")
-        myCalculator.saveVariable("×")
+        myCalculator.saveVariable(OperationsEnum.MULTIPLY.value)
         myCalculator.saveVariable("3")
-        myCalculator.saveVariable("+")
+        myCalculator.saveVariable(OperationsEnum.ADD.value)
         myCalculator.saveVariable("3")
-        myCalculator.saveVariable("×")
+        myCalculator.saveVariable(OperationsEnum.MULTIPLY.value)
         myCalculator.saveVariable("4")
 
         myCalculator.calculate()
@@ -70,11 +66,21 @@ class CalculatorTestKit {
 
     @Test
     fun tan_isCorrect() {
-        myCalculator.saveVariable("tan")
+        myCalculator.saveVariable(OperationsEnum.TAN.value)
         myCalculator.saveVariable("180")
 
         myCalculator.calculate()
 
         assertEquals("0.0", myCalculator.getResult())
+    }
+
+    @Test
+    fun sqrt_isCorrect() {
+        myCalculator.saveVariable(OperationsEnum.SQRT.value)
+        myCalculator.saveVariable("9")
+
+        myCalculator.calculate()
+
+        assertEquals("3.0", myCalculator.getResult())
     }
 }

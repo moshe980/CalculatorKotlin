@@ -13,10 +13,10 @@ sealed class MathOperation {
 
 class MyCalculator {
     private val operations: MutableMap<String, MathOperation> = mutableMapOf()
-    private var statesStack: Stack<String> = Stack()
+    private var stack: Stack<String> = Stack()
         set(value) {
-            statesStack.clear()
-            statesStack.addAll(value)
+            stack.clear()
+            stack.addAll(value)
 
         }
     private var lastOperator: String = ""
@@ -52,27 +52,25 @@ class MyCalculator {
     }
 
     fun calculate() {
-        if (statesStack.size > 3)
-            operationSort()
-
         var x = 0.0
         lateinit var operator: String
 
-        if (statesStack.size == 1) {
+        if (stack.size > 3)
+            priorityCalculate()
+
+        if (stack.size == 1) {
             if (lastOperator != "") {
                 saveVariable(lastOperator)
                 saveVariable(lastVar.toString())
-
             } else {
-                operator = statesStack.pop()
+                operator = stack.pop()
             }
-
         }
 
-        while (statesStack.size > 1 || statesStack.size == 0) {
-            if (statesStack.size >= 2) {
-                x = statesStack.pop().toDouble()
-                operator = statesStack.pop()
+        while (stack.size > 1 || stack.size == 0) {
+            if (stack.size >= 2) {
+                x = stack.pop().toDouble()
+                operator = stack.pop()
 
                 if (isFirstCalc) {
                     lastVar = x
@@ -83,7 +81,7 @@ class MyCalculator {
 
             when (val operation = operations[operator]) {
                 is MathOperation.Binary -> {
-                    val y: Double = statesStack.pop().toDouble()
+                    val y: Double = stack.pop().toDouble()
                     saveVariable(operation.op.myApply(y, x).toString())
                 }
                 is MathOperation.Unary -> {
@@ -99,39 +97,41 @@ class MyCalculator {
 
     }
 
-    private fun operationSort() {
+    private fun priorityCalculate() {
         val tmpStack: Stack<String> = Stack()
         var x: Double
         var y: Double
-        var z: String
+        var result: String
 
-        tmpStack.addAll(statesStack)
+        tmpStack.addAll(stack)
 
-        statesStack.forEach {
-            if (it.equals("×") || it.equals("÷") || it.equals("÷") || it.equals("x^×")) {
+        stack.forEach {
+            if (it.equals(OperationsEnum.MULTIPLY.value) || it.equals(OperationsEnum.DIVIDE.value)
+                || it.equals(OperationsEnum.POW.value)
+            ) {
                 x = tmpStack.removeAt(tmpStack.indexOf(it) + 1).toDouble()
                 y = tmpStack.removeAt(tmpStack.indexOf(it) - 1).toDouble()
                 val operation = operations[it] as MathOperation.Binary
-                z = operation.op.myApply(y, x).toString()
+                result = operation.op.myApply(y, x).toString()
 
-                tmpStack.insertElementAt(z, tmpStack.indexOf(it))
+                tmpStack.insertElementAt(result, tmpStack.indexOf(it))
                 tmpStack.removeAt(tmpStack.indexOf(it))
 
             }
         }
 
-        statesStack = tmpStack
+        stack = tmpStack
 
     }
 
-    fun getResult(): String = statesStack.removeLast()
+    fun getResult(): String = stack.removeLast()
     fun saveVariable(x: String) {
-        statesStack.push(x)
+        stack.push(x)
     }
 
 
     fun clearMemory() {
-        statesStack.clear()
+        stack.clear()
         isFirstCalc = true
     }
 
