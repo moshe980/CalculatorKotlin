@@ -13,7 +13,7 @@ sealed class MathOperation {
 
 class MyCalculator {
     private val operations: MutableMap<String, MathOperation> = mutableMapOf()
-    private val statesStack: Stack<String> = Stack()
+    private var statesStack: Stack<String> = Stack()
     private var lastOperator: String = ""
     private var lastVar: Double = 0.0
     private var isFirstCalc: Boolean = true
@@ -47,6 +47,7 @@ class MyCalculator {
     }
 
     fun calculate() {
+        operationSort()
         var x = 0.0
         lateinit var operator: String
 
@@ -88,6 +89,31 @@ class MyCalculator {
                 else -> {}
             }
         }
+
+    }
+
+    private fun operationSort() {
+        val stack: Stack<String> = Stack()
+        var x: Double
+        var y: Double
+        var z: String
+
+        stack.addAll(statesStack)
+
+        statesStack.forEach {
+            if (it.equals("×") || it.equals("÷")) {
+                x = stack.removeAt(stack.indexOf(it) + 1).toDouble()
+                y = stack.removeAt(stack.indexOf(it) - 1).toDouble()
+                val operation = operations[it] as MathOperation.Binary
+                z = operation.op.myApply(y, x).toString()
+
+                stack.insertElementAt(z, stack.indexOf(it))
+                stack.removeAt(stack.indexOf(it))
+
+            }
+        }
+        statesStack.clear()
+        statesStack.addAll(stack)
 
     }
 
